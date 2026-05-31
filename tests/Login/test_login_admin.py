@@ -1,6 +1,5 @@
 from pages.login_page import LoginPage
 from pages.dashboard_page import DashboardPage
-
 from utils.data_generator import generate_user_registration_data
 
 def test_login_admin_success(page):
