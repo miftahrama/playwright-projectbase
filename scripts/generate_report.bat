@@ -5,6 +5,9 @@ REM Generates report from latest test run folder
 REM Uses matching date_counter subfolder structure
 REM ============================================
 
+REM Change to the directory where this script is located's parent (project root)
+cd /d "%~dp0\.."
+
 setlocal enabledelayedexpansion
 
 REM Find the latest date_counter folder

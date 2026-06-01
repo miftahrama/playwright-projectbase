@@ -16,7 +16,6 @@ from config.settings import get_settings, Settings
 from pages.login_page import LoginPage
 from pages.dashboard_page import DashboardPage
 
-
 def _get_run_folder_name() -> str:
     """
     Generate folder name with date_counter format: DDMMYYYY_N
@@ -42,24 +41,19 @@ def _get_run_folder_name() -> str:
     return f"{today}_{next_counter}"
 
 
-def pytest_load_initial_conftests(early_config, parser, args):
-    """Inject --alluredir argument before pytest processes command line options."""
+@pytest.hookimpl(tryfirst=True)
+def pytest_configure(config):
+    """Configure allure results directory with date_counter folder.
+    
+    Using tryfirst=True to ensure this runs BEFORE allure-pytest's pytest_configure
+    so that config.option.allure_report_dir is set when allure-pytest reads it.
+    """
     run_folder = _get_run_folder_name()
     results_dir = os.path.join("allure-results", run_folder)
     os.makedirs(results_dir, exist_ok=True)
-
-    # Inject --alluredir at the beginning of args
-    args[:] = ["--alluredir", results_dir] + args
-
-
-def pytest_configure(config):
-    """Configure allure results directory with date_counter folder."""
-    # Ensure the alluredir is set (fallback if not set via load_initial_conftests)
-    if not hasattr(config.option, 'alluredir') or not config.option.alluredir:
-        run_folder = _get_run_folder_name()
-        results_dir = os.path.join("allure-results", run_folder)
-        os.makedirs(results_dir, exist_ok=True)
-        config.option.alluredir = results_dir
+    
+    # Set the correct attribute that allure-pytest reads (allure_report_dir, not alluredir)
+    config.option.allure_report_dir = results_dir
 
 
 def pytest_addoption(parser):
