@@ -1,35 +1,73 @@
-from playwright.sync_api import Page, expect
+"""
+Login page object.
+Locators defined as properties for lazy evaluation.
+"""
+from playwright.sync_api import Page, Locator
 from pages.base_page import BasePage
 
+
 class LoginPage(BasePage):
-    def __init__(self, page: Page):
+    """Page object for login page."""
+
+    def __init__(self, page: Page, base_url: str = None):
         super().__init__(page)
+        self._base_url = base_url
 
-    # ---- STATIC OBJECT LOCATOR ----
-        self.url_login = "https://portal-sekolah.com"
-        self.btn_masuk_awal = page.get_by_role("button", name="Masuk").first
-        self.dropdown_sekolah = page.get_by_role("combobox", name="Sekolah")
-        self.input_username = page.get_by_role("textbox", name="Username")
-        self.input_password = page.get_by_role("textbox", name="Password")
-        self.btn_masuk = page.get_by_role("button", name="Masuk", exact=True)
-        self.txt_dashboard_admin = page.get_by_text("Admin", exact=True)
+    @property
+    def url(self) -> str:
+        """Get login page URL."""
+        return self._base_url or "https://portal-sekolah.com"
 
-    # ---- DYNAMIC OBJECT LOCATOR ----
-    def get_pilihan_sekolah_locator(self, nama_sekolah: str):
+    # === LOCATORS (properties for lazy evaluation) ===
+
+    @property
+    def btn_masuk_awal(self) -> Locator:
+        return self.page.get_by_role("button", name="Masuk").first
+
+    @property
+    def dropdown_sekolah(self) -> Locator:
+        return self.page.get_by_role("combobox", name="Sekolah")
+
+    @property
+    def input_username(self) -> Locator:
+        return self.page.get_by_role("textbox", name="Username")
+
+    @property
+    def input_password(self) -> Locator:
+        return self.page.get_by_role("textbox", name="Password")
+
+    @property
+    def btn_masuk(self) -> Locator:
+        return self.page.get_by_role("button", name="Masuk", exact=True)
+
+    @property
+    def txt_dashboard_admin(self) -> Locator:
+        return self.page.get_by_text("Admin", exact=True)
+
+    def get_pilihan_sekolah_locator(self, nama_sekolah: str) -> Locator:
+        """Get locator for school option by name."""
         return self.page.get_by_text(nama_sekolah)
 
-    # ---- ACTION / METHOD ----
-    def navigate(self):
-        self.page.goto(self.url_login)
+    # === ACTIONS ===
 
-    def pilih_sekolah(self, teks_pencarian: str, nama_sekolah_pilihan: str):
+    def navigate(self) -> None:
+        """Navigate to login page."""
+        self.page.goto(self.url)
+
+    def select_school(self, search_text: str, school_name: str) -> None:
+        """Select school from dropdown."""
         self.dropdown_sekolah.click()
-        self.dropdown_sekolah.fill(teks_pencarian)
-        self.get_pilihan_sekolah_locator(nama_sekolah_pilihan).click()
+        self.dropdown_sekolah.fill(search_text)
+        self.get_pilihan_sekolah_locator(school_name).click()
 
-    def login_user(self, username: str, password: str):
+    def login(self, username: str, password: str) -> None:
+        """Fill login form and submit."""
         self.btn_masuk_awal.click()
         self.input_username.fill(username)
         self.input_password.fill(password)
         self.btn_masuk.click()
 
+    def verify_error_message(self) -> None:
+        """Verify error message is visible (for failed login)."""
+        error_locator = self.page.get_by_text("Error")
+        self.assert_visible(error_locator)

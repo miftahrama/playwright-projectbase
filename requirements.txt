@@ -1,0 +1,12 @@
+# Core
+playwright
+pytest
+pytest-playwright
+allure-pytest
+
+# Utilities
+faker
+python-dotenv
+
+# Browser management
+playwright-stealth

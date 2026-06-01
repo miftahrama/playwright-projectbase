@@ -1,0 +1,20 @@
+[
+  {
+    "username": "adminsmp.123",
+    "password": "password123*",
+    "expected": "success",
+    "description": "Valid admin credentials"
+  },
+  {
+    "username": "wrong_user",
+    "password": "wrong_password",
+    "expected": "error",
+    "description": "Invalid credentials"
+  },
+  {
+    "username": "",
+    "password": "",
+    "expected": "error",
+    "description": "Empty fields"
+  }
+]
