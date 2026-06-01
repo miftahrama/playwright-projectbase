@@ -42,14 +42,24 @@ def _get_run_folder_name() -> str:
     return f"{today}_{next_counter}"
 
 
-def pytest_configure(config):
-    """Configure allure results directory with date_counter folder."""
+def pytest_load_initial_conftests(early_config, parser, args):
+    """Inject --alluredir argument before pytest processes command line options."""
     run_folder = _get_run_folder_name()
     results_dir = os.path.join("allure-results", run_folder)
     os.makedirs(results_dir, exist_ok=True)
 
-    # Override allure results directory
-    config.option.alluredir = results_dir
+    # Inject --alluredir at the beginning of args
+    args[:] = ["--alluredir", results_dir] + args
+
+
+def pytest_configure(config):
+    """Configure allure results directory with date_counter folder."""
+    # Ensure the alluredir is set (fallback if not set via load_initial_conftests)
+    if not hasattr(config.option, 'alluredir') or not config.option.alluredir:
+        run_folder = _get_run_folder_name()
+        results_dir = os.path.join("allure-results", run_folder)
+        os.makedirs(results_dir, exist_ok=True)
+        config.option.alluredir = results_dir
 
 
 def pytest_addoption(parser):
@@ -59,7 +69,7 @@ def pytest_addoption(parser):
         action="store",
         default="staging",
         choices=["staging", "production"],
-        help="Environment to test against: staging, production (default: staging)"
+        help="Environment to test execution: staging, production (default: staging)"
     )
     parser.addoption(
         "--browser-type",
@@ -72,7 +82,7 @@ def pytest_addoption(parser):
         "--headless",
         action="store_true",
         default=False,
-        help="Run browser in headless mode"
+        help="Run browser in headless mode (default=False)"
     )
 
 
@@ -102,7 +112,7 @@ def launched_browser(playwright, browser_type_name: str, request) -> Browser:
     return browser_instance.launch(headless=headless)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def browser_context_manager(launched_browser: Browser, settings: Settings) -> BrowserContext:
     """
     Browser context setup - session scope.

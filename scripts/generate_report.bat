@@ -33,7 +33,7 @@ echo Report folder:  %REPORT_FOLDER%
 echo ============================================
 
 REM Generate report in date_counter subfolder
-C:\allure\allure-2.32.0\bin\allure generate allure-results\%LATEST_FOLDER% -o "%REPORT_FOLDER%" --clean
+allure generate allure-results\%LATEST_FOLDER% -o "%REPORT_FOLDER%" --clean
 
 if %errorlevel% equ 0 (
     echo.

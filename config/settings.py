@@ -43,8 +43,8 @@ class Settings:
         self.NAVIGATION_TIMEOUT: int = int(os.getenv("NAVIGATION_TIMEOUT", "30000"))
 
         # Test data
-        self.DEFAULT_SCHOOL_SEARCH: str = os.getenv("DEFAULT_SCHOOL_SEARCH", "smp - q")
-        self.DEFAULT_SCHOOL_NAME: str = os.getenv("DEFAULT_SCHOOL_NAME", "SMP - QA Demo School")
+        self.DEFAULT_SCHOOL_SEARCH: str = os.getenv("DEFAULT_SCHOOL_SEARCH", "smp - qa demo school")
+        self.DEFAULT_SCHOOL_NAME: str = os.getenv("DEFAULT_SCHOOL_NAME", "SMP - QA Demo School 123")
         self.DEFAULT_USERNAME: str = os.getenv("DEFAULT_USERNAME", "adminsmp.123")
         self.DEFAULT_PASSWORD: str = os.getenv("DEFAULT_PASSWORD", "password123*")
 
