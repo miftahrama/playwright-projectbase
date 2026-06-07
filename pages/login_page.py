@@ -1,73 +1,62 @@
-"""
-Login page object.
-Locators defined as properties for lazy evaluation.
-"""
 from playwright.sync_api import Page, Locator
 from pages.base_page import BasePage
 
-
 class LoginPage(BasePage):
-    """Page object for login page."""
+    """Locator Creation Guidelines:
 
-    def __init__(self, page: Page, base_url: str = None):
+    - Do Not create locator under __init__ constructor method (for ram optimize purpose)
+    - Create locator with basic python method(without @property decorator) if your locator needs dynamic parameters.
+    - Create locator with lazy evaluation locator style(basic python method + @property decorator) if your locator no need dynamic parameters.
+
+    """
+
+    # === CONSTRUCTOR ===
+    def __init__(self, page: Page, base_url):
         super().__init__(page)
-        self._base_url = base_url
+        self.login_url = f'{base_url}/login'
 
+    # === PAGE LOCATORS ===
     @property
-    def url(self) -> str:
-        """Get login page URL."""
-        return self._base_url or "https://portal-sekolah.com"
-
-    # === LOCATORS (properties for lazy evaluation) ===
-
-    @property
-    def btn_masuk_awal(self) -> Locator:
+    def btn_masuk_landing_page(self) -> Locator:
         return self.page.get_by_role("button", name="Masuk").first
 
     @property
-    def dropdown_sekolah(self) -> Locator:
+    def school_dropdown(self) -> Locator:
         return self.page.get_by_role("combobox", name="Sekolah")
 
+    def school_option_list(self, nama_sekolah: str) -> Locator:
+        """Get locator for school option by school name."""
+        return self.page.get_by_text(nama_sekolah)
+
     @property
-    def input_username(self) -> Locator:
+    def username_field(self) -> Locator:
         return self.page.get_by_role("textbox", name="Username")
 
     @property
-    def input_password(self) -> Locator:
+    def password_field(self) -> Locator:
         return self.page.get_by_role("textbox", name="Password")
 
     @property
     def btn_masuk(self) -> Locator:
         return self.page.get_by_role("button", name="Masuk", exact=True)
 
-    @property
-    def txt_dashboard_admin(self) -> Locator:
-        return self.page.get_by_text("Admin", exact=True)
-
-    def get_pilihan_sekolah_locator(self, nama_sekolah: str) -> Locator:
-        """Get locator for school option by name."""
-        return self.page.get_by_text(nama_sekolah)
-
-    # === ACTIONS ===
-
-    def navigate(self) -> None:
+    # === PAGE ACTIONS(METHOD) ===
+    def navigate(self):
         """Navigate to login page."""
-        self.page.goto(self.url)
+        self.page.goto(self.login_url)
 
-    def select_school(self, search_text: str, school_name: str) -> None:
+    def select_school(self, school_name):
         """Select school from dropdown."""
-        self.dropdown_sekolah.click()
-        self.dropdown_sekolah.fill(search_text)
-        self.get_pilihan_sekolah_locator(school_name).click()
+        self.school_dropdown.fill(school_name)
+        self.school_option_list(school_name).click()
 
-    def login(self, username: str, password: str) -> None:
-        """Fill login form and submit."""
-        self.btn_masuk_awal.click()
-        self.input_username.fill(username)
-        self.input_password.fill(password)
+    def user_login(self, schoolname, username, password):
+        self.btn_masuk_landing_page.click()
+        self.school_dropdown.click()
+        self.press_backspace(self.school_dropdown)
+        self.select_school(schoolname)
+        # self.school_dropdown.fill(schoolname)
+        # self.school_option_list(schoolname).click()
+        self.username_field.fill(username)
+        self.password_field.fill(password)
         self.btn_masuk.click()
-
-    def verify_error_message(self) -> None:
-        """Verify error message is visible (for failed login)."""
-        error_locator = self.page.get_by_text("Error")
-        self.assert_visible(error_locator)

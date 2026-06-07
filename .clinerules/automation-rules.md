@@ -23,18 +23,19 @@ project_root/
 ├── config/                     # config settings for precondition(setup), used in conftest.py
 ├── conftest.py                 # Global fixtures (page, browser_context, authenticated_user, etc.)
 ├── pages/                      # Page Object Models
-│   ├── base_page.py            # Base class for all pages (contains common locators/methods)
-│   └── [feature]_page.py       # Specific page objects (e.g., login_page.py)
+│   ├── base_page.py            # Base class for all pages and also contains assertions & commons helper.
+│   └── <feature>_page.py       # Specific page objects (e.g., login_page.py, dashboard_page.py)
 ├── tests/                       # Test Scripts folder
-│   └── [test_suite_folder_name] # You can create new ones in separate subfolder for each feature. e.g., Login/ subfolder, it will contains all login test scripts.
-│       └── test_[feature].py    # Test Script file (e.g., test_login_admin.py, test_login_student.py, test_login_teacher.py, etc)
+│   └── [subfolder of tests]     # You can create new ones in separate subfolder for each feature. e.g., Login/ subfolder, it will contains all login feature test scripts.
+│       └── test_<feature>.py    # Test Script file (e.g., test_login_admin.py, test_login_student.py, test_dashboard_admin.py, etc)
 ├── utils/                      # Helper functions
-│   └── data_generator.py       # Contains generate_data_random using Faker library
-├── test-data/                  
-│   └── [feature]_cases.csv     # Static Test Data with JSON files or CSV files.
+│   ├── data_generator.py       # Contains generate_data_random using Faker library
+│   ├── helpers.py              # general helpers, you can add or edit the existing helper as needed.
+│   └── login_data.json         # json static test data for login. 
 ├── allure-results/             # For Output of Allure result (auto-generated)
 ├── allure-report/              # For Output of Allure report from generated allure result files.
-└── requirements.txt
+├── scripts/                    # SCript for generate allure-result to allure-report with subfolder date time prefix
+└── requirements.txt            # all required libs for opearate this project. You can add new if there's new library instalation 
 ```
 
 ### Key Conventions
@@ -55,6 +56,8 @@ project_root/
 5. **Utils Integration**:
    - If you need relevant test-data for run a test case, use `generate_data_random` from `utils/data_generator.py`. Do not hardcode static test data in each test unless asked.
 
+Notes: [MANDATORY] DO NOT delete any folders or files in this project unless requested.
+
 ## 4. Workflow Instructions
 
 ### Step 1: Analyze Existing Codebase
@@ -71,11 +74,11 @@ Before generating any new code, you must analyze the existing files to understan
 - **Input**: 
   - User will provide a Target URL.
   - User will provide a Test Cases containing scenarios to convert into the test scripts under `tests/`
-  - If user does not provide a test cases or scenarios, and user request you to generate test scripts under `tests/` based on the target URL only, then you must generate test scripts from the page content at that URL provided. 
+  - If user does not provide a test cases or scenarios, and user requests you to generate test scripts under `tests/` based on the target URL only, then you must generate test scripts from the page content at that URL provided. 
 - **Action**: 
-  1. Parse the CSV file to identify columns: `testid`, `test_scenario`, `test_data`, `test_step`, `expected_result`, and `is_automated`.
+  1. Parse the test case file(if provided) to identify columns: `test id`, `test scenario`, `test data`, `test step`, `expected result`, and `is_automated`.
   2. Identify key interactive elements on the URL provided.
-  3. Map CSV columns to Page Object methods (e.g., column 'username' -> `page.fill_username()`).
+  3. Map each test steps in the Test Steps columns to be Page Object methods.
 
 ### Step 3: Generate Page Object (`pages/<feature_name>_page.py`)
 - **File Location**: `pages/`

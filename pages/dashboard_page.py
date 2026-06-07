@@ -5,11 +5,10 @@ Locators defined as properties for lazy evaluation.
 from playwright.sync_api import Page, Locator
 from pages.base_page import BasePage
 
-
 class DashboardPage(BasePage):
     """Page object for admin dashboard page."""
 
-    def __init__(self, page: Page, dashboard_url: str = None):
+    def __init__(self, page: Page, dashboard_url):
         super().__init__(page)
         self._dashboard_url = dashboard_url
 

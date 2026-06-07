@@ -14,12 +14,12 @@ class Environments:
 
     STAGING = {
         "base_url": "https://portal-sekolah.com",
-        "dashboard_url": "https://dashboard.portal-sekolah.com/",
+        "dashboard_url": "https://dashboard.portal-sekolah.com",
     }
 
     PRODUCTION = {
         "base_url": "https://portalsekolah.com",
-        "dashboard_url": "https://dashboard.portalsekolah.com/",
+        "dashboard_url": "https://dashboard.portalsekolah.com",
     }
 
 
@@ -42,7 +42,7 @@ class Settings:
         self.TIMEOUT: int = int(os.getenv("TIMEOUT", "10000"))
         self.NAVIGATION_TIMEOUT: int = int(os.getenv("NAVIGATION_TIMEOUT", "30000"))
 
-        # Test data
+        # Static Test data
         self.DEFAULT_SCHOOL_SEARCH: str = os.getenv("DEFAULT_SCHOOL_SEARCH", "smp - qa demo school")
         self.DEFAULT_SCHOOL_NAME: str = os.getenv("DEFAULT_SCHOOL_NAME", "SMP - QA Demo School 123")
         self.DEFAULT_USERNAME: str = os.getenv("DEFAULT_USERNAME", "adminsmp.123")
@@ -50,7 +50,7 @@ class Settings:
 
         # Screenshot settings
         self.SCREENSHOT_ON_FAILURE: bool = os.getenv("SCREENSHOT_ON_FAILURE", "true").lower() == "true"
-        self.SCREENSHOT_DIR: str = os.getenv("SCREENSHOT_DIR", "test-results/screenshots")
+        self.SCREENSHOT_DIR: str = os.getenv("SCREENSHOT_DIR", "test-screenshot/screenshots")
 
 
 def get_settings(env: str = "staging") -> Settings:

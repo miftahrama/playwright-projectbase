@@ -6,7 +6,6 @@ from faker import Faker
 
 fake = Faker("id_ID")
 
-
 def generate_data_random() -> dict:
     """Generate random user data."""
     return {

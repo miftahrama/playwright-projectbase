@@ -133,19 +133,6 @@ def page(browser_context_manager) -> Page:
     yield new_page
     new_page.close()
 
-# ====================== PAGE OBJECT FIXTURES ============================
-@pytest.fixture(scope="function")
-def login_page(page: Page, settings: Settings) -> LoginPage:
-    """Login page object fixture."""
-    return LoginPage(page, base_url=settings.BASE_URL)
-
-
-@pytest.fixture(scope="function")
-def dashboard_page(page: Page, settings: Settings) -> DashboardPage:
-    """Dashboard page object fixture."""
-    return DashboardPage(page, dashboard_url=settings.DASHBOARD_URL)
-
-# ===========================================================================
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
@@ -169,7 +156,7 @@ def pytest_runtest_makereport(item, call):
 
         if page is not None:
             try:
-                screenshot_dir = "test-results/screenshots"
+                screenshot_dir = "screenshots"
                 os.makedirs(screenshot_dir, exist_ok=True)
                 screenshot_path = os.path.join(
                     screenshot_dir,
@@ -186,3 +173,15 @@ def pytest_runtest_makereport(item, call):
                     )
             except Exception:
                 pass
+
+# ====================== PAGE OBJECT FIXTURES ============================
+
+@pytest.fixture(scope="function")
+def login_page(page, settings) -> LoginPage:
+    return LoginPage(page, settings.BASE_URL)
+
+@pytest.fixture(scope="function")
+def dashboard_page(page, settings) -> DashboardPage:
+    return DashboardPage(page, settings.BASE_URL)
+
+# ===========================================================================

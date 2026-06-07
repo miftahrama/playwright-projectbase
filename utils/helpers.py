@@ -10,24 +10,20 @@ def get_timestamp() -> str:
     """Get current timestamp string."""
     return datetime.now().strftime("%Y%m%d_%H%M%S")
 
-
 def load_json_file(file_path: str) -> dict:
     """Load and parse a JSON file."""
     with open(file_path, "r", encoding="utf-8") as f:
         return json.load(f)
-
 
 def save_json_file(file_path: str, data: dict) -> None:
     """Save data to a JSON file."""
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
-
 def ensure_dir(directory: str) -> str:
     """Ensure directory exists, create if not."""
     os.makedirs(directory, exist_ok=True)
     return directory
-
 
 def get_project_root() -> str:
     """Get project root directory."""

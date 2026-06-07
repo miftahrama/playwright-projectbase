@@ -38,7 +38,7 @@ workspace.xml
 .env
 
 # Test results
-test-results/
+test-screenshot/
 allure-results/
 allure-report/
 playwright-report/
