@@ -6,13 +6,10 @@ from playwright.sync_api import Page, Locator, expect
 
 
 class BasePage:
-    """Base page object with common assertion helpers."""
-
     def __init__(self, page: Page):
         self.page = page
 
     # === ASSERTION HELPERS (with Allure integration) ===
-
     def assert_visible(self, locator: Locator, timeout: int = None) -> None:
         """Assert element is visible."""
         expect(locator).to_be_visible(timeout=timeout)
